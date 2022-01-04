@@ -422,8 +422,15 @@ ynh_install_extra_app_dependencies() {
     # Add an extra repository for those packages
     ynh_install_extra_repo --repo="$repo" $key --priority=995 --name=$name
 
-    # Install requested dependencies from this extra repository.
-    ynh_install_app_dependencies "$package"
+
+    
+    if ynh_package_is_installed --package="$package"; then
+        # Force upgrade of a specific extra_app_dependency
+        ynh_package_install "$package"
+    else
+        # Install requested dependencies from this extra repository.
+        ynh_install_app_dependencies "$package"    
+    fi      
 
     # Remove this extra repository after packages are installed
     ynh_remove_extra_repo --name=$app
